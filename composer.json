@@ -1,0 +1,26 @@
+{
+    "name": "kora/data-provider",
+    "description": "Data provider",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Pawel Gierlasinski",
+            "email": "gierlasinski.pawel@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Kora\\DataProvider\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "require": {
+        "php": "^7.0",
+        "mockery/mockery": "^0.9.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2"
+    }
+}
