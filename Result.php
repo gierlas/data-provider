@@ -2,6 +2,7 @@
 
 namespace Kora\DataProvider;
 
+use Kora\DataProvider\DataProviderOperatorsSetup;
 use Kora\DataProvider\OperatorDefinition\PaginatorInterface;
 
 
@@ -12,9 +13,9 @@ use Kora\DataProvider\OperatorDefinition\PaginatorInterface;
 class Result
 {
 	/**
-	 * @var DataProviderInterface
+	 * @var DataProviderOperatorsSetup
 	 */
-	private $dataProvider;
+	private $dataProviderOperatorsSetup;
 
 	/**
 	 * @var array
@@ -48,38 +49,38 @@ class Result
 
 	/**
 	 * Result constructor.
-	 * @param DataProviderInterface $dataProvider
+	 * @param DataProviderOperatorsSetup $dataProviderOperatorsSetup
 	 * @param array                 $results
 	 * @param int                   $nbAll
 	 */
-	public function __construct(DataProviderInterface $dataProvider, array $results, int $nbAll)
+	public function __construct(DataProviderOperatorsSetup $dataProviderOperatorsSetup, array $results, int $nbAll)
 	{
-		$this->dataProvider = $dataProvider;
+		$this->dataProviderOperatorsSetup = $dataProviderOperatorsSetup;
 		$this->results = $results;
 		$this->nbAll = $nbAll;
 
-		$this->hasOrder = $this->dataProvider->getOrder() !== null;
-		$this->hasPaginator = $this->dataProvider->getPager() !== null;
+		$this->hasOrder = $this->dataProviderOperatorsSetup->getOrder() !== null;
+		$this->hasPaginator = $this->dataProviderOperatorsSetup->getPager() !== null;
 
 		$this->init();
 	}
 
 	protected function init()
 	{
-		foreach ($this->dataProvider->getFilters() as $filter) {
+		foreach ($this->dataProviderOperatorsSetup->getFilters() as $filter) {
 			$value = $filter->getParamValue();
 			if(empty($value)) continue;
 			$this->filterParams += $value;
 		}
 
 		$orderParams = [];
-		if($this->dataProvider->getOrder() !== null) {
-			$orderParams = $this->dataProvider->getOrder()->getParamValue();
-			$this->dataProvider->getOrder()->setExtraOrderParams($this->filterParams);
+		if($this->dataProviderOperatorsSetup->getOrder() !== null) {
+			$orderParams = $this->dataProviderOperatorsSetup->getOrder()->getParamValue();
+			$this->dataProviderOperatorsSetup->getOrder()->setExtraOrderParams($this->filterParams);
 		}
 
-		if($this->dataProvider->getPager() !== null) {
-			$this->paginator = $this->dataProvider->getPager()->getPaginator(
+		if($this->dataProviderOperatorsSetup->getPager() !== null) {
+			$this->paginator = $this->dataProviderOperatorsSetup->getPager()->getPaginator(
 				$this->nbAll, array_merge($this->filterParams, $orderParams)
 			);
 		}
@@ -99,7 +100,7 @@ class Result
 	 */
 	public function isColumnOrderable(string $columnName): bool
 	{
-		return $this->hasOrder && $this->dataProvider->getOrder()->isColumnOrdered($columnName);
+		return $this->hasOrder && $this->dataProviderOperatorsSetup->getOrder()->isColumnOrdered($columnName);
 	}
 
 	/**
@@ -109,7 +110,7 @@ class Result
 	public function getOrderParamsForColumn(string $columnName): array
 	{
 		if(!$this->hasOrder) return [];
-		return $this->dataProvider->getOrder()->getColumnOrderParams($columnName);
+		return $this->dataProviderOperatorsSetup->getOrder()->getColumnOrderParams($columnName);
 	}
 
 	/**
@@ -119,7 +120,7 @@ class Result
 	public function getColumnOrder(string $columnName)
 	{
 		if(!$this->hasOrder) return null;
-		return $this->dataProvider->getOrder()->getColumnCurrentOrderDirection($columnName);
+		return $this->dataProviderOperatorsSetup->getOrder()->getColumnCurrentOrderDirection($columnName);
 	}
 
 	/**

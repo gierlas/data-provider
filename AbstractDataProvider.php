@@ -14,119 +14,52 @@ use Kora\DataProvider\OperatorDefinition\PagerOperatorDefinitionInterface;
 abstract class AbstractDataProvider implements DataProviderInterface
 {
 	/**
-	 * @var OperatorDefinitionInterface[]
+	 * @var OperatorImplementationsList
 	 */
-	protected $operators = [];
+	private $implementationsList;
 
 	/**
-	 * @var FilterOperatorDefinitionInterface[]
+	 * AbstractDataProvider constructor.
+	 * @param OperatorImplementationsList $implementationsList
 	 */
-	protected $filters = [];
-
-	/**
-	 * @var array[]
-	 */
-	protected $filtersExtraConfig = [];
-
-	/**
-	 * @var OrderOperatorDefinitionInterface
-	 */
-	protected $order;
-
-	/**
-	 * @var PagerOperatorDefinitionInterface
-	 */
-	protected $pager;
-
-	/**
-	 * @param OperatorDefinitionInterface $operator
-	 *
-	 * @return DataProviderInterface
-	 */
-	public function addOperator(OperatorDefinitionInterface $operator): DataProviderInterface
+	public function __construct(OperatorImplementationsList $implementationsList)
 	{
-		$this->operators[] = $operator;
-		return $this;
+		$this->implementationsList = $implementationsList;
 	}
 
 	/**
-	 * @return OperatorDefinitionInterface[]
+	 * @param DataProviderOperatorsSetup $setup
 	 */
-	public function getOperators(): array
+	protected function applySetup(DataProviderOperatorsSetup $setup)
 	{
-		return $this->operators;
-	}
+		foreach ($setup->getOperators() as $operator) {
+			$operatorCode = OperatorImplementationsList::getOperatorCode($operator);
 
-	/**
-	 * @param FilterOperatorDefinitionInterface $filter
-	 *
-	 * @param array                             $extraConfig
-	 * @return DataProviderInterface
-	 */
-	public function addFilter(FilterOperatorDefinitionInterface $filter, array $extraConfig = []): DataProviderInterface
-	{
-		$this->filters[$filter->getName()] = $filter;
-		$this->filtersExtraConfig[$filter->getName()] = $extraConfig;
-		$this->addOperator($filter);
+			if (!$this->implementationsList->hasImplementation($operatorCode)) continue;
 
-		return $this;
-	}
+			$operatorImplementation = $this->implementationsList->getImplementation($operatorCode);
 
-	/**
-	 * @return FilterOperatorDefinitionInterface[]
-	 */
-	public function getFilters(): array
-	{
-		return $this->filters;
-	}
-
-	/**
-	 * @return \Generator|array[]
-	 */
-	public function getFiltersWithExtraConfigIterator()
-	{
-		foreach ($this->filters as $filter) {
-			yield $filter->getName() => [$filter, $this->filtersExtraConfig[$filter->getName()]];
+			$operatorImplementation->apply($this, $operator);
 		}
 	}
 
 	/**
-	 * @param OrderOperatorDefinitionInterface $order
-	 * @return DataProviderInterface
+	 * @param DataProviderOperatorsSetup $setup
+	 * @return Result
 	 */
-	public function setOrder(OrderOperatorDefinitionInterface $order)
+	public function fetchData(DataProviderOperatorsSetup $setup): Result
 	{
-		$this->order = $order;
-		$this->addOperator($order);
+		$this->applySetup($setup);
 
-		return $this;
+		$data = $this->fetchFromDataSource();
+		$count = $this->count();
+
+		return new Result($setup, $data, $count);
 	}
 
 	/**
-	 * @return OrderOperatorDefinitionInterface
+	 * @return array
 	 */
-	public function getOrder()
-	{
-		return $this->order;
-	}
+	abstract protected function fetchFromDataSource(): array;
 
-	/**
-	 * @param PagerOperatorDefinitionInterface $pager
-	 * @return DataProviderInterface
-	 */
-	public function setPager(PagerOperatorDefinitionInterface $pager): DataProviderInterface
-	{
-		$this->pager = $pager;
-		$this->addOperator($pager);
-
-		return $this;
-	}
-
-	/**
-	 * @return PagerOperatorDefinitionInterface
-	 */
-	public function getPager()
-	{
-		return $this->pager;
-	}
 }

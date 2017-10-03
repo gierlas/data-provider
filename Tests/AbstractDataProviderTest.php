@@ -3,10 +3,12 @@
 namespace Kora\DataProvider\Tests;
 
 use Kora\DataProvider\AbstractDataProvider;
+use Kora\DataProvider\DataProviderOperatorsSetup;
 use Kora\DataProvider\OperatorDefinition\FilterOperatorDefinitionInterface;
 use Kora\DataProvider\OperatorDefinition\OrderOperatorDefinitionInterface;
 use Kora\DataProvider\OperatorDefinition\PagerOperatorDefinitionInterface;
-use Kora\DataProvider\Tests\Fixtures\FooDataProvider;
+use Kora\DataProvider\OperatorImplementationsList;
+use Kora\DataProvider\Result;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
 
@@ -17,39 +19,49 @@ use Mockery as m;
  */
 class AbstractDataProviderTest extends TestCase
 {
-	public function testFilterAddedToOperators()
+	use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
+	public function testApplySetup()
 	{
 		$filter = $this->getMockBuilder(FilterOperatorDefinitionInterface::class)->getMock();
-		$dataProvider = m::spy(AbstractDataProvider::class)->makePartial();
 
-		$this->assertEmpty($dataProvider->getOperators());
-		$dataProvider->addFilter($filter);
-		$this->assertCount(1, $dataProvider->getOperators());
-
-		$dataProvider->shouldHaveReceived('addOperator')->once();
-	}
-
-	public function testOrderAddedToOperators()
-	{
 		$order = $this->getMockBuilder(OrderOperatorDefinitionInterface::class)->getMock();
-		$dataProvider = m::spy(AbstractDataProvider::class)->makePartial();
+		$order->method('getParamValue')->willReturn([]);
 
-		$this->assertEmpty($dataProvider->getOperators());
-		$dataProvider->setOrder($order);
-		$this->assertCount(1, $dataProvider->getOperators());
-
-		$dataProvider->shouldHaveReceived('addOperator')->once();
-	}
-
-	public function testPagerAddedToOperators()
-	{
 		$pager = $this->getMockBuilder(PagerOperatorDefinitionInterface::class)->getMock();
-		$dataProvider = m::spy(AbstractDataProvider::class)->makePartial();
 
-		$this->assertEmpty($dataProvider->getOperators());
-		$dataProvider->setPager($pager);
-		$this->assertCount(1, $dataProvider->getOperators());
+		$dataProviderOperatorSetup = new DataProviderOperatorsSetup();
+		$dataProviderOperatorSetup
+			->addFilter($filter)
+			->setOrder($order)
+			->setPager($pager);
 
-		$dataProvider->shouldHaveReceived('addOperator')->once();
+		$implementationList = m::mock(OperatorImplementationsList::class)
+			->shouldDeferMissing();
+
+		$dataProvider = m::mock(AbstractDataProvider::class, [$implementationList])
+			->shouldAllowMockingProtectedMethods()
+			->shouldDeferMissing();
+
+		$dataProvider
+			->shouldReceive('fetchFromDataSource')
+			->andReturn([])
+			->once();
+
+		$dataProvider
+			->shouldReceive('count')
+			->andReturn(0)
+			->once();
+
+		$implementationList
+			->shouldReceive('hasImplementation')
+			->times(3);
+
+		/** @var Result $result */
+		$result = $dataProvider
+			->fetchData($dataProviderOperatorSetup);
+
+		$this->assertEquals($result->getResults(), []);
+
 	}
 }
