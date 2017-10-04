@@ -26,7 +26,7 @@ class CallbackFilterImplementation extends AbstractValueFilterImplementation
 	 * @param DataProviderInterface       $dataProvider
 	 * @param OperatorDefinitionInterface $definition
 	 */
-	public function _apply(DataProviderInterface $dataProvider, OperatorDefinitionInterface $definition)
+	protected function _apply(DataProviderInterface $dataProvider, OperatorDefinitionInterface $definition)
 	{
 		/** @var CallbackFilterDefinition $definition */
 		call_user_func(
