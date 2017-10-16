@@ -39,7 +39,7 @@ class AbstractDataProviderTest extends TestCase
 		$implementationList = m::mock(OperatorImplementationsList::class)
 			->shouldDeferMissing();
 
-		$dataProvider = m::mock(AbstractDataProvider::class, [$implementationList])
+		$dataProvider = m::mock(AbstractDataProvider::class, [$implementationList, []])
 			->shouldAllowMockingProtectedMethods()
 			->shouldDeferMissing();
 
