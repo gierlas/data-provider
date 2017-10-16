@@ -35,9 +35,9 @@ interface PaginatorInterface
 	public function getCurrentPage(): int;
 
 	/**
-	 * @param string|int $nb if string then allow: last, first, previous, next
+	 * @param string|int $page if string then allow: last, first, previous, next
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function getPageParams($nb): array;
+	public function getPageParams($page): array;
 }

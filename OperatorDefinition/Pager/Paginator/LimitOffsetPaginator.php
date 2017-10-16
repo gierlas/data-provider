@@ -11,6 +11,11 @@ use Kora\DataProvider\OperatorDefinition\PaginatorInterface;
  */
 class LimitOffsetPaginator implements PaginatorInterface
 {
+	const PAGE_FIRST = 'first';
+	const PAGE_LAST = 'last';
+	const PAGE_PREVIOUS = 'previous';
+	const PAGE_NEXT = 'next';
+
 	/**
 	 * @var int
 	 */
@@ -117,51 +122,61 @@ class LimitOffsetPaginator implements PaginatorInterface
 	}
 
 	/**
-	 * @param int|string $nb
+	 * @param int|string $page
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function getPageParams($nb): array
+	public function getPageParams($page): array
 	{
 		$limit = $this->limit;
 
-		if($nb === 'last') {
+		if(is_int($page)) {
 			return array_merge($this->additionalParams, [
-				$this->offsetParamName => ($this->lastPage - 1) * $limit,
+				$this->offsetParamName => $limit * ($page - 1),
 				$this->limitParamName => $limit
 			]);
 		}
 
-		if($nb === 'first') {
-			return array_merge($this->additionalParams, [
+		if(in_array($page, [self::PAGE_FIRST, self::PAGE_LAST, self::PAGE_PREVIOUS, self::PAGE_NEXT], true)) {
+			$pageParams = $this->getStringPageParams($page);
+			return array_merge($this->additionalParams, $pageParams);
+		}
+
+		throw new \InvalidArgumentException("'$page' is not proper page.");
+	}
+
+	/**
+	 * @param string $page
+	 * @return array
+	 */
+	protected function getStringPageParams(string $page): array
+	{
+		if($page === self::PAGE_FIRST) {
+			return [
 				$this->offsetParamName => 0,
-				$this->limitParamName => $limit
-			]);
+				$this->limitParamName => $this->limit
+			];
 		}
 
-		if($nb === 'previous') {
+		if($page === self::PAGE_LAST) {
+			return [
+				$this->offsetParamName => ($this->lastPage - 1) * $this->limit,
+				$this->limitParamName => $this->limit
+			];
+		}
+
+		if($page === self::PAGE_PREVIOUS) {
 			$offset = $this->offset - $this->limit;
-			return array_merge($this->additionalParams, [
+			return [
 				$this->offsetParamName => $offset < 0 ? 0 : $offset,
-				$this->limitParamName => $limit
-			]);
+				$this->limitParamName => $this->limit
+			];
 		}
 
-		if($nb === 'next') {
-			$offset = $this->offset + $this->limit;
-			return array_merge($this->additionalParams, [
-				$this->offsetParamName => $offset > $this->totalNb ? ($this->lastPage - 1) * $limit : $offset,
-				$this->limitParamName => $limit
-			]);
-		}
-
-		if(is_int($nb)) {
-			return array_merge($this->additionalParams, [
-				$this->offsetParamName => $limit * ($nb - 1),
-				$this->limitParamName => $limit
-			]);
-		}
-
-		throw new \Exception('Wrong page type');
+		$offset = $this->offset + $this->limit;
+		return [
+			$this->offsetParamName => $offset > $this->totalNb ? ($this->lastPage - 1) * $this->limit : $offset,
+			$this->limitParamName => $this->limit
+		];
 	}
 }
