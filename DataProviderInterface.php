@@ -14,9 +14,9 @@ use Kora\DataProvider\OperatorDefinition\PagerOperatorDefinitionInterface;
 interface DataProviderInterface
 {
 	/**
-	 * @return array
+	 * @return Mapper
 	 */
-	public function getMapping(): array;
+	public function getMapper(): Mapper;
 
 	/**
 	 * @return int

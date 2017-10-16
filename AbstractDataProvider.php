@@ -19,27 +19,27 @@ abstract class AbstractDataProvider implements DataProviderInterface
 	protected $implementationsList;
 
 	/**
-	 * @var array
+	 * @var Mapper
 	 */
-	protected $mapping;
+	protected $mapper;
 
 	/**
 	 * AbstractDataProvider constructor.
 	 * @param OperatorImplementationsList $implementationsList
-	 * @param array                       $mapping
+	 * @param Mapper                      $mapper
 	 */
-	public function __construct(OperatorImplementationsList $implementationsList, array $mapping = [])
+	public function __construct(OperatorImplementationsList $implementationsList, Mapper $mapper)
 	{
 		$this->implementationsList = $implementationsList;
-		$this->mapping = $mapping;
+		$this->mapper = $mapper;
 	}
 
 	/**
-	 * @return array
+	 * @return Mapper
 	 */
-	public function getMapping(): array
+	public function getMapper(): Mapper
 	{
-		return $this->mapping;
+		return $this->mapper;
 	}
 
 	/**

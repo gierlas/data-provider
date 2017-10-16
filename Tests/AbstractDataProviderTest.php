@@ -4,6 +4,7 @@ namespace Kora\DataProvider\Tests;
 
 use Kora\DataProvider\AbstractDataProvider;
 use Kora\DataProvider\DataProviderOperatorsSetup;
+use Kora\DataProvider\Mapper;
 use Kora\DataProvider\OperatorDefinition\FilterOperatorDefinitionInterface;
 use Kora\DataProvider\OperatorDefinition\OrderOperatorDefinitionInterface;
 use Kora\DataProvider\OperatorDefinition\PagerOperatorDefinitionInterface;
@@ -39,7 +40,7 @@ class AbstractDataProviderTest extends TestCase
 		$implementationList = m::mock(OperatorImplementationsList::class)
 			->shouldDeferMissing();
 
-		$dataProvider = m::mock(AbstractDataProvider::class, [$implementationList, []])
+		$dataProvider = m::mock(AbstractDataProvider::class, [$implementationList, new Mapper()])
 			->shouldAllowMockingProtectedMethods()
 			->shouldDeferMissing();
 
