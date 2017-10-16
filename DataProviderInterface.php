@@ -14,6 +14,11 @@ use Kora\DataProvider\OperatorDefinition\PagerOperatorDefinitionInterface;
 interface DataProviderInterface
 {
 	/**
+	 * @return array
+	 */
+	public function getMapping(): array;
+
+	/**
 	 * @return int
 	 */
 	public function count(): int;
