@@ -16,12 +16,12 @@ abstract class AbstractDataProvider implements DataProviderInterface
 	/**
 	 * @var OperatorImplementationsList
 	 */
-	private $implementationsList;
+	protected $implementationsList;
 
 	/**
 	 * @var array
 	 */
-	private $mapping;
+	protected $mapping;
 
 	/**
 	 * AbstractDataProvider constructor.
