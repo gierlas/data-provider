@@ -62,14 +62,6 @@ class ChoiceFilterDefinition implements FilterOperatorDefinitionInterface
 	}
 
 	/**
-	 * @return array|null
-	 */
-	public function getParamValue()
-	{
-		return !empty($this->value) ? [$this->name => $this->value] : null;
-	}
-
-	/**
 	 * @return array
 	 */
 	public function getChoices(): array
@@ -157,5 +149,13 @@ class ChoiceFilterDefinition implements FilterOperatorDefinitionInterface
 	protected function filterMulti(array $value)
 	{
 		return array_map(function($value) { return filter_var($value, $this->filterType); }, $value);
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function getParamValue()
+	{
+		return !empty($this->value) ? [$this->name => $this->value] : null;
 	}
 }
