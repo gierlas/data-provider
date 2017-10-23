@@ -70,16 +70,6 @@ class ChoiceFilterDefinition implements FilterOperatorDefinitionInterface
 	}
 
 	/**
-	 * @param array $choices
-	 * @return ChoiceFilterDefinition
-	 */
-	public function setChoices(array $choices): ChoiceFilterDefinition
-	{
-		$this->choices = $choices;
-		return $this;
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function isMulti(): bool
@@ -133,14 +123,30 @@ class ChoiceFilterDefinition implements FilterOperatorDefinitionInterface
 		$value = $params[$this->name];
 
 		if($this->multi) {
-			$choices = $this->filterType !== null ? $this->filterMulti($value) : $value;
-			$this->value = $this->choiceProvider->validateChoices($choices);
-			return;
+			return $this->handleMulti($value);
 		}
 
+		$this->handleSingle($value);
+	}
+
+	/**
+	 * @param array $value
+	 */
+	protected function handleMulti(array $value)
+	{
+		$choices = $this->filterType !== null ? $this->filterMulti($value) : $value;
+		$this->value = $this->choiceProvider->validateChoices($choices);
+	}
+
+	/**
+	 * @param $value
+	 */
+	protected function handleSingle($value)
+	{
 		$choice = $this->filterType !== null ? filter_var($value, $this->filterType) : $value;
 		$this->value = $this->choiceProvider->validateChoice($choice);
 	}
+
 
 	/**
 	 * @param array $value
