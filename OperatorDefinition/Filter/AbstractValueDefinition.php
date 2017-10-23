@@ -9,13 +9,8 @@ use Kora\DataProvider\OperatorDefinition\FilterOperatorDefinitionInterface;
  * Class AbstractValueDefinition
  * @author Paweł Gierlasiński <gierlasinski.pawel@gmail.com>
  */
-abstract class AbstractValueDefinition implements FilterOperatorDefinitionInterface
+abstract class AbstractValueDefinition extends AbstractNameDefinition
 {
-	/**
-	 * @var string
-	 */
-	protected $name;
-
 	/**
 	 * @var bool
 	 */
@@ -39,7 +34,7 @@ abstract class AbstractValueDefinition implements FilterOperatorDefinitionInterf
 	 */
 	public function __construct(string $name, bool $allowUseEmpty = false, $filterType = FILTER_SANITIZE_STRING)
 	{
-		$this->name = $name;
+		parent::__construct($name);
 		$this->allowEmpty = $allowUseEmpty;
 		$this->filterType = $filterType;
 	}
@@ -54,14 +49,6 @@ abstract class AbstractValueDefinition implements FilterOperatorDefinitionInterf
 			$this->value = $this->filterType
 				? filter_var($params[$this->name], $this->filterType) : $params[$this->name];
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getName(): string
-	{
-		return $this->name;
 	}
 
 	/**
