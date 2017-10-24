@@ -17,12 +17,12 @@ class DateFilterDefinition extends AbstractNameDefinition
 	protected $date;
 
 	/**
-	 * @var null
+	 * @var null|string
 	 */
 	private $format;
 
 	/**
-	 * @var null
+	 * @var null|\DateTimeZone
 	 */
 	private $timezone;
 
@@ -40,7 +40,7 @@ class DateFilterDefinition extends AbstractNameDefinition
 	}
 
 	/**
-	 * @return null
+	 * @return null|string
 	 */
 	public function getFormat()
 	{
@@ -48,7 +48,7 @@ class DateFilterDefinition extends AbstractNameDefinition
 	}
 
 	/**
-	 * @param null $format
+	 * @param null|string $format
 	 * @return DateFilterDefinition
 	 */
 	public function setFormat($format)
@@ -58,7 +58,7 @@ class DateFilterDefinition extends AbstractNameDefinition
 	}
 
 	/**
-	 * @return null
+	 * @return \DateTimeZone|null
 	 */
 	public function getTimezone()
 	{
@@ -66,7 +66,7 @@ class DateFilterDefinition extends AbstractNameDefinition
 	}
 
 	/**
-	 * @param null $timezone
+	 * @param \DateTimeZone|null $timezone
 	 * @return DateFilterDefinition
 	 */
 	public function setTimezone($timezone)
@@ -89,23 +89,31 @@ class DateFilterDefinition extends AbstractNameDefinition
 	 */
 	public function initData(array $params)
 	{
-		$dateValue = $params[$this->name] ?? null;
-
-		if($dateValue === null) {
+		if(!isset($params[$this->name])) {
 			return;
 		}
+
+		$dateValue = $params[$this->name];
 
 		if ($dateValue instanceof \DateTime) {
 			$this->date = $dateValue;
 			return;
 		}
 
-		$this->date = $this->format !== null
-			? \DateTime::createFromFormat($this->format, $dateValue, $this->timezone)
+		$this->date = $this->format !== null ? \DateTime::createFromFormat($this->format, $dateValue, $this->timezone)
 			: new \DateTime($dateValue, $this->timezone);
 
+		$this->assertInit($dateValue);
+	}
+
+	/**
+	 * @param $input
+	 * @throws \InvalidArgumentException
+	 */
+	protected function assertInit($input)
+	{
 		if(!$this->date instanceof \DateTime) {
-			throw new \InvalidArgumentException("$dateValue is not proper value.");
+			throw new \InvalidArgumentException("$input is not proper value.");
 		}
 	}
 
