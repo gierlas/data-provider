@@ -12,6 +12,10 @@ use PHPUnit\Framework\TestCase;
  **/
 class ArrayProviderTest extends TestCase
 {
+	protected static $CHOICES = [
+		'test', 'test1', 'test2', 'test3', 'test4'
+	];
+
 	/**
 	 * @dataProvider validChoiceProvider
 	 * @param array $availableChoices
@@ -28,8 +32,10 @@ class ArrayProviderTest extends TestCase
 
 	public function validChoiceProvider()
 	{
-		[
-			[[], null, null]
+		return [
+			[self::$CHOICES, null, null],
+			[self::$CHOICES, 'test', 'test'],
+			[self::$CHOICES, 'asdf', null]
 		];
 	}
 
@@ -49,8 +55,12 @@ class ArrayProviderTest extends TestCase
 
 	public function validChoicesProvider()
 	{
-		[
-			[[], null, null]
+		return [
+			[self::$CHOICES, [], []],
+			[self::$CHOICES, ['test'], ['test']],
+			[self::$CHOICES, ['test', 'test1'], ['test', 'test1']],
+			[self::$CHOICES, ['asdf'], []],
+			[self::$CHOICES, ['asdf', 'test'], ['test']]
 		];
 	}
 }
