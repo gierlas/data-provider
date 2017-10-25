@@ -11,17 +11,26 @@ class DateRangeDefinition extends AbstractNameDefinition
 {
 	const DATE_START_NAME = 'start';
 	const DATE_END_NAME = 'end';
-	const FORMAT = 'Y-m-d';
 
 	/**
 	 * @var null
 	 */
-	private $format;
+	protected $format;
 
 	/**
 	 * @var null
 	 */
-	private $timezone;
+	protected $timezone;
+
+	/**
+	 * @var bool
+	 */
+	protected $hasDatePart = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $hasTimePart = false;
 
 	/**
 	 * @var \DateTime|null
@@ -46,10 +55,10 @@ class DateRangeDefinition extends AbstractNameDefinition
 	/**
 	 * DateRangeDefinition constructor.
 	 * @param string $name
-	 * @param null   $format
+	 * @param string $format
 	 * @param null   $timezone
 	 */
-	public function __construct($name, $format = null, $timezone = null)
+	public function __construct($name, string $format = 'Y-m-d', $timezone = null)
 	{
 		parent::__construct($name);
 		$this->format = $format;
@@ -89,6 +98,42 @@ class DateRangeDefinition extends AbstractNameDefinition
 	public function setTimezone($timezone)
 	{
 		$this->timezone = $timezone;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isHasDatePart(): bool
+	{
+		return $this->hasDatePart;
+	}
+
+	/**
+	 * @param bool $hasDatePart
+	 * @return DateRangeDefinition
+	 */
+	public function setHasDatePart(bool $hasDatePart): DateRangeDefinition
+	{
+		$this->hasDatePart = $hasDatePart;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isHasTimePart(): bool
+	{
+		return $this->hasTimePart;
+	}
+
+	/**
+	 * @param bool $hasTimePart
+	 * @return DateRangeDefinition
+	 */
+	public function setHasTimePart(bool $hasTimePart): DateRangeDefinition
+	{
+		$this->hasTimePart = $hasTimePart;
 		return $this;
 	}
 
@@ -159,7 +204,7 @@ class DateRangeDefinition extends AbstractNameDefinition
 	 */
 	protected function getDate($value)
 	{
-		if($value === null) {
+		if ($value === null) {
 			return null;
 		}
 
@@ -168,7 +213,7 @@ class DateRangeDefinition extends AbstractNameDefinition
 		}
 
 		return $this->format !== null
-			? \DateTime::createFromFormat($this->format, $this->timezone)
+			? \DateTime::createFromFormat($this->format, $value, $this->timezone)
 			: new \DateTime($value, $this->timezone);
 	}
 
@@ -177,18 +222,18 @@ class DateRangeDefinition extends AbstractNameDefinition
 	 */
 	public function getParamValue()
 	{
-		if($this->dateStart === null && $this->dateEnd === null) {
+		if ($this->dateStart === null && $this->dateEnd === null) {
 			return null;
 		}
 
 		$ret = [];
 
-		if($this->dateStart !== null) {
-			$ret[$this->startName] = $this->dateStart->format($this->format ?? self::FORMAT);
+		if ($this->dateStart !== null) {
+			$ret[$this->startName] = $this->dateStart->format($this->format);
 		}
 
-		if($this->dateEnd !== null) {
-			$ret[$this->endName] = $this->dateEnd->format($this->format ?? self::FORMAT);
+		if ($this->dateEnd !== null) {
+			$ret[$this->endName] = $this->dateEnd->format($this->format);
 		}
 
 		return [$this->name => $ret];

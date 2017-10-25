@@ -32,8 +32,8 @@ class DateFilterDefinitionTest extends TestCase
 	{
 		return [
 			['Y-m-d', '2017-05-31', \DateTime::createFromFormat('Y-m-d', '2017-05-31')],
-			[null, '2017-05-31', new \DateTime('2017-05-31')],
-			[null, null, null]
+			['Y-m-d', '2017-05-31', new \DateTime('2017-05-31')],
+			['Y-m-d', null, null]
 		];
 	}
 

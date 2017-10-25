@@ -39,10 +39,10 @@ class DateRangeDefinitionTest extends TestCase
 		$end = DateRangeDefinition::DATE_END_NAME;
 
 		return [
-			[null, [ $start => '2015-05-10', $end => '2015-05-10' ], new \DateTime('2015-05-10'), new \DateTime('2015-05-10')],
-			[null, [ $start => '2015-05-10' ], new \DateTime('2015-05-10'), null],
-			[null, [ $end => '2015-05-10' ], null, new \DateTime('2015-05-10')],
-			[null, [ ], null, null]
+			['Y-m-d', [ $start => '2015-05-10', $end => '2015-05-10' ], new \DateTime('2015-05-10'), new \DateTime('2015-05-10')],
+			['Y-m-d', [ $start => '2015-05-10' ], new \DateTime('2015-05-10'), null],
+			['Y-m-d', [ $end => '2015-05-10' ], null, new \DateTime('2015-05-10')],
+			['Y-m-d', [ ], null, null]
 
 		];
 	}

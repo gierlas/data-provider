@@ -9,8 +9,6 @@ namespace Kora\DataProvider\OperatorDefinition\Filter;
  */
 class DateFilterDefinition extends AbstractNameDefinition
 {
-	const FORMAT = 'Y-m-d';
-
 	/**
 	 * @var \DateTime|null
 	 */
@@ -19,20 +17,30 @@ class DateFilterDefinition extends AbstractNameDefinition
 	/**
 	 * @var null|string
 	 */
-	private $format;
+	protected $format;
 
 	/**
 	 * @var null|\DateTimeZone
 	 */
-	private $timezone;
+	protected $timezone;
+
+	/**
+	 * @var bool
+	 */
+	protected $hasDatePart = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $hasTimePart = false;
 
 	/**
 	 * DateFilterDefinition constructor.
 	 * @param string $name
-	 * @param null   $format
+	 * @param string $format
 	 * @param null   $timezone
 	 */
-	public function __construct($name, $format = null, $timezone = null)
+	public function __construct($name, string $format = 'Y-m-d H:i:s', $timezone = null)
 	{
 		parent::__construct($name);
 		$this->format = $format;
@@ -76,6 +84,42 @@ class DateFilterDefinition extends AbstractNameDefinition
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function hasDatePart(): bool
+	{
+		return $this->hasDatePart;
+	}
+
+	/**
+	 * @param bool $hasDatePart
+	 * @return DateFilterDefinition
+	 */
+	public function setHasDatePart(bool $hasDatePart): DateFilterDefinition
+	{
+		$this->hasDatePart = $hasDatePart;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasTimePart(): bool
+	{
+		return $this->hasTimePart;
+	}
+
+	/**
+	 * @param bool $hasTimePart
+	 * @return DateFilterDefinition
+	 */
+	public function setHasTimePart(bool $hasTimePart): DateFilterDefinition
+	{
+		$this->hasTimePart = $hasTimePart;
+		return $this;
+	}
+
+	/**
 	 * @return \DateTime|null
 	 */
 	public function getDate()
@@ -89,7 +133,7 @@ class DateFilterDefinition extends AbstractNameDefinition
 	 */
 	public function initData(array $params)
 	{
-		if(!isset($params[$this->name])) {
+		if (!isset($params[$this->name])) {
 			return;
 		}
 
@@ -112,7 +156,7 @@ class DateFilterDefinition extends AbstractNameDefinition
 	 */
 	protected function assertInit($input)
 	{
-		if(!$this->date instanceof \DateTime) {
+		if (!$this->date instanceof \DateTime) {
 			throw new \InvalidArgumentException("$input is not proper value.");
 		}
 	}
@@ -126,6 +170,6 @@ class DateFilterDefinition extends AbstractNameDefinition
 			return null;
 		}
 
-		return [$this->name => $this->date->format($this->format ?? self::FORMAT)];
+		return [$this->name => $this->date->format($this->format)];
 	}
 }
