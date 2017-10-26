@@ -104,7 +104,7 @@ class DateRangeDefinition extends AbstractNameDefinition
 	/**
 	 * @return bool
 	 */
-	public function isHasDatePart(): bool
+	public function hasDatePart(): bool
 	{
 		return $this->hasDatePart;
 	}
@@ -122,7 +122,7 @@ class DateRangeDefinition extends AbstractNameDefinition
 	/**
 	 * @return bool
 	 */
-	public function isHasTimePart(): bool
+	public function hasTimePart(): bool
 	{
 		return $this->hasTimePart;
 	}
