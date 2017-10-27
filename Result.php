@@ -154,4 +154,12 @@ class Result
 	{
 		return $this->results;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getNbAll(): int
+	{
+		return $this->nbAll;
+	}
 }
