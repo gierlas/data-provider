@@ -220,6 +220,8 @@ class DateRangeFilterDefinition extends AbstractNameDefinition
 			throw new \InvalidArgumentException("$value is not proper date.");
 		}
 
+		$value = trim($value);
+
 		$date = $this->format !== null
 			? \DateTime::createFromFormat($this->format, $value, $this->timezone)
 			: new \DateTime($value, $this->timezone);
