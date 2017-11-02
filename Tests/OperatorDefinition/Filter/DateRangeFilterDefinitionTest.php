@@ -17,8 +17,9 @@ class DateRangeFilterDefinitionTest extends TestCase
 	 * @param $input
 	 * @param $expectedStart
 	 * @param $expectedEnd
+	 * @param $expectNull
 	 */
-	public function testInitData($format, $input, $expectedStart, $expectedEnd)
+	public function testInitData($format, $input, $expectedStart, $expectedEnd, $expectNull)
 	{
 		$name = 'test';
 		$dateFilterDefinition = new DateRangeFilterDefinition($name, $format);
@@ -27,7 +28,7 @@ class DateRangeFilterDefinitionTest extends TestCase
 
 //		$this->assertEquals($expectedStart, $dateFilterDefinition->getDateStart());
 //		$this->assertEquals($expectedEnd, $dateFilterDefinition->getDateEnd());
-		$this->assertEquals(!empty($input) ? [ $name => $input ] : null, $dateFilterDefinition->getParamValue());
+		$this->assertEquals(!$expectNull ? [ $name => $input ] : null, $dateFilterDefinition->getParamValue());
 	}
 
 	/**
@@ -39,10 +40,11 @@ class DateRangeFilterDefinitionTest extends TestCase
 		$end = DateRangeFilterDefinition::DATE_END_NAME;
 
 		return [
-			['Y-m-d', [ $start => '2015-05-10', $end => '2015-05-10' ], new \DateTime('2015-05-10'), new \DateTime('2015-05-10')],
-			['Y-m-d', [ $start => '2015-05-10' ], new \DateTime('2015-05-10'), null],
-			['Y-m-d', [ $end => '2015-05-10' ], null, new \DateTime('2015-05-10')],
-			['Y-m-d', [ ], null, null]
+			['Y-m-d', [ $start => '2015-05-10', $end => '2015-05-10' ], new \DateTime('2015-05-10'), new \DateTime('2015-05-10'), false],
+			['Y-m-d', [ $start => '2015-05-10' ], new \DateTime('2015-05-10'), null, false],
+			['Y-m-d', [ $end => '2015-05-10' ], null, new \DateTime('2015-05-10'), false],
+			['Y-m-d', [ $end => '' ], null, null, true],
+			['Y-m-d', [ ], null, null, true]
 
 		];
 	}

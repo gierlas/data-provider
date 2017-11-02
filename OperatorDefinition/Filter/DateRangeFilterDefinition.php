@@ -208,7 +208,7 @@ class DateRangeFilterDefinition extends AbstractNameDefinition
 	 */
 	protected function getDate($value)
 	{
-		if ($value === null) {
+		if (empty($value)) {
 			return null;
 		}
 
