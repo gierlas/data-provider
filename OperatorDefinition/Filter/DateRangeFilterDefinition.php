@@ -7,7 +7,7 @@ namespace Kora\DataProvider\OperatorDefinition\Filter;
  * Class DateRangeDefinition
  * @author Paweł Gierlasiński <pawel@mediamonks.com>
  */
-class DateRangeDefinition extends AbstractNameDefinition
+class DateRangeFilterDefinition extends AbstractNameDefinition
 {
 	const DATE_START_NAME = 'start';
 	const DATE_END_NAME = 'end';
@@ -75,7 +75,7 @@ class DateRangeDefinition extends AbstractNameDefinition
 
 	/**
 	 * @param null $format
-	 * @return DateRangeDefinition
+	 * @return DateRangeFilterDefinition
 	 */
 	public function setFormat($format)
 	{
@@ -93,7 +93,7 @@ class DateRangeDefinition extends AbstractNameDefinition
 
 	/**
 	 * @param null $timezone
-	 * @return DateRangeDefinition
+	 * @return DateRangeFilterDefinition
 	 */
 	public function setTimezone($timezone)
 	{
@@ -111,9 +111,9 @@ class DateRangeDefinition extends AbstractNameDefinition
 
 	/**
 	 * @param bool $hasDatePart
-	 * @return DateRangeDefinition
+	 * @return DateRangeFilterDefinition
 	 */
-	public function setHasDatePart(bool $hasDatePart): DateRangeDefinition
+	public function setHasDatePart(bool $hasDatePart): DateRangeFilterDefinition
 	{
 		$this->hasDatePart = $hasDatePart;
 		return $this;
@@ -129,9 +129,9 @@ class DateRangeDefinition extends AbstractNameDefinition
 
 	/**
 	 * @param bool $hasTimePart
-	 * @return DateRangeDefinition
+	 * @return DateRangeFilterDefinition
 	 */
-	public function setHasTimePart(bool $hasTimePart): DateRangeDefinition
+	public function setHasTimePart(bool $hasTimePart): DateRangeFilterDefinition
 	{
 		$this->hasTimePart = $hasTimePart;
 		return $this;
@@ -147,9 +147,9 @@ class DateRangeDefinition extends AbstractNameDefinition
 
 	/**
 	 * @param string $startName
-	 * @return DateRangeDefinition
+	 * @return DateRangeFilterDefinition
 	 */
-	public function setStartName(string $startName): DateRangeDefinition
+	public function setStartName(string $startName): DateRangeFilterDefinition
 	{
 		$this->startName = $startName;
 		return $this;
@@ -165,9 +165,9 @@ class DateRangeDefinition extends AbstractNameDefinition
 
 	/**
 	 * @param string $endName
-	 * @return DateRangeDefinition
+	 * @return DateRangeFilterDefinition
 	 */
-	public function setEndName(string $endName): DateRangeDefinition
+	public function setEndName(string $endName): DateRangeFilterDefinition
 	{
 		$this->endName = $endName;
 		return $this;

@@ -2,14 +2,14 @@
 
 namespace Kora\DataProvider\Tests\OperatorDefinition\Filter;
 
-use Kora\DataProvider\OperatorDefinition\Filter\DateRangeDefinition;
+use Kora\DataProvider\OperatorDefinition\Filter\DateRangeFilterDefinition;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Class DateRangeDefinitionTest
  * @author Paweł Gierlasiński <pawel@mediamonks.com>
  */
-class DateRangeDefinitionTest extends TestCase
+class DateRangeFilterDefinitionTest extends TestCase
 {
 	/**
 	 * @dataProvider initDataProvider
@@ -21,7 +21,7 @@ class DateRangeDefinitionTest extends TestCase
 	public function testInitData($format, $input, $expectedStart, $expectedEnd)
 	{
 		$name = 'test';
-		$dateFilterDefinition = new DateRangeDefinition($name, $format);
+		$dateFilterDefinition = new DateRangeFilterDefinition($name, $format);
 
 		$dateFilterDefinition->initData([$name => $input]);
 
@@ -35,8 +35,8 @@ class DateRangeDefinitionTest extends TestCase
 	 */
 	public function initDataProvider()
 	{
-		$start = DateRangeDefinition::DATE_START_NAME;
-		$end = DateRangeDefinition::DATE_END_NAME;
+		$start = DateRangeFilterDefinition::DATE_START_NAME;
+		$end = DateRangeFilterDefinition::DATE_END_NAME;
 
 		return [
 			['Y-m-d', [ $start => '2015-05-10', $end => '2015-05-10' ], new \DateTime('2015-05-10'), new \DateTime('2015-05-10')],
