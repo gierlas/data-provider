@@ -194,13 +194,17 @@ class DateRangeFilterDefinition extends AbstractNameDefinition
 	 */
 	public function initData(array $params)
 	{
-		$rangeValue = $params[$this->name];
+		$rangeValue = $params[$this->name] ?? [];
+
+		if(empty($rangeValue)) return;
+
 		$this->dateStart = $this->getDate($rangeValue[$this->startName] ?? null);
 		$this->dateEnd = $this->getDate($rangeValue[$this->endName] ?? null);
 	}
 
 	/**
 	 * @return \DateTime|null
+	 * @throws \InvalidArgumentException
 	 */
 	protected function getDate($value)
 	{
@@ -212,9 +216,19 @@ class DateRangeFilterDefinition extends AbstractNameDefinition
 			return $value;
 		}
 
-		return $this->format !== null
+		if(!is_string($value)) {
+			throw new \InvalidArgumentException("$value is not proper date.");
+		}
+
+		$date = $this->format !== null
 			? \DateTime::createFromFormat($this->format, $value, $this->timezone)
 			: new \DateTime($value, $this->timezone);
+
+		if(is_bool($date)) {
+			throw new \InvalidArgumentException("$value is not proper date.");
+		}
+
+		return $date;
 	}
 
 	/**
